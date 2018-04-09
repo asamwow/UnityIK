@@ -2,11 +2,11 @@
 
 ## User Stories
 
-    <!-- 
+<!-- 
     As a <specific user>
     I want <something in software>
     so that <some benefit>
-    -->
+-->
 
  ##
 
