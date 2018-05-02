@@ -7,8 +7,11 @@ public class JointSystem : MonoBehaviour {
 	// [SerializeField]
 	// Vector3 target;
 
-	[SerializeField]
-	Transform target;
+	public JointSystem parent;
+
+	public Transform target;
+
+	public bool done {get; private set;}
 
 	[SerializeField]
 	Transform[] joints;
@@ -30,15 +33,14 @@ public class JointSystem : MonoBehaviour {
 		}
 	}
 
-	void Update() {
-		// Debug.Log(IKCoroutine);
-		if (IKCoroutine != null) {
-			// StopCoroutine(IKCoroutine);
-			return;
-		}
-		
-		IKCoroutine = StartCoroutine(IterateIK());
-	}
+	// void Update() {
+	// 	// Debug.Log(IKCoroutine);
+	// 	if (IKCoroutine != null) {
+	// 		// StopCoroutine(IKCoroutine);
+	// 		return;
+	// 	}
+	// 	IKCoroutine = StartCoroutine(IterateIK());
+	// }
 
 	IEnumerator IterateIK(float speed = 1f) {
 		// Check for malformed parameters
@@ -99,8 +101,7 @@ public class JointSystem : MonoBehaviour {
 				}
 				float angle = Vector3.Angle(previousDirection, difference);
 				if (angle > jointConstraints[i-1] || angle < -jointConstraints[i-1]) {
-					Debug.Log("Joint " + i + " out of constraint at angle " + angle);
-					// Quaternion.AxisAngle()
+					// Debug.Log("Joint " + i + " out of constraint at angle " + angle);
 					Quaternion jointRotation = Quaternion.AngleAxis(jointConstraints[i-1], Vector3.Cross(previousDirection, difference));
 					jointPositions[i-1] = jointRotation * previousDirection.normalized + jointPositions[i];
 					// Debug.Log(Vector3.Angle(jointPositions[i] - jointPositions[i-1], jointPositions[i+1] - jointPositions[i]));
@@ -110,7 +111,11 @@ public class JointSystem : MonoBehaviour {
 				}
 			}
 			// Set base joint to original location
-			jointPositions[0] = Vector3.zero; //TODO replace this with original joint location
+			if (transform.parent == null) {
+				jointPositions[0] = Vector3.zero; //TODO replace this with original joint locatio
+			} else {
+				jointPositions[0] = transform.parent.position;
+			}
 			for (int i = 0; i < jointCount - 1; i++) {
 				Vector3 difference = jointPositions[i+1] - jointPositions[i];
 				Vector3 previousDirection;
@@ -121,8 +126,7 @@ public class JointSystem : MonoBehaviour {
 				}
 				float angle = Vector3.Angle(previousDirection, difference);
 				if (angle > jointConstraints[i] || angle < -jointConstraints[i]) {
-					Debug.Log("Joint " + i + " out of constraint at angle " + angle);
-					// Quaternion.AxisAngle()
+					// Debug.Log("Joint " + i + " out of constraint at angle " + angle);
 					Quaternion jointRotation = Quaternion.AngleAxis(jointConstraints[i], Vector3.Cross(previousDirection, difference));
 					jointPositions[i+1] = jointRotation * previousDirection.normalized + jointPositions[i];
 					// Debug.Log(Vector3.Angle(jointPositions[i] - jointPositions[i-1], jointPositions[i+1] - jointPositions[i]));
@@ -133,6 +137,7 @@ public class JointSystem : MonoBehaviour {
 			}
 			// DEBUG CODE
 			iterations++;
+			// Debug.Log(iterations);
 			if (iterations > 1000) {
 				Debug.LogError("infinite loop");
 				yield break;
@@ -150,42 +155,16 @@ public class JointSystem : MonoBehaviour {
 			yield return rotationCoroutines[i];
 		}
 		// Debug.Log("Coroutine set to null");
+		done = true;
 		IKCoroutine = null;
 	}
 
-	// IEnumerator RotateJoint(Transform rotatingJoint, Transform targetJoint, Vector3 target, float speed = 1f) {
-	// 	Vector3 localTarget = target - rotatingJoint.position;
-	// 	//TODO make correct rotation
-	// 	float rotation = Mathf.Acos(localTarget.x) / Mathf.PI * 180;
-	// 	float originalRotation = rotatingJoint.transform.eulerAngles.y;
-	// 	float lerpIndex = 0f;
-	// 	Vector3 newRotation = rotatingJoint.transform.eulerAngles;
-	// 	while (Mathf.Abs(rotatingJoint.transform.eulerAngles.y - rotation) > 0.05f) {
-	// 		newRotation.y = Mathf.Lerp(originalRotation, rotation, lerpIndex);
-	// 		rotatingJoint.transform.rotation = Quaternion.Euler(newRotation);
-	// 		lerpIndex += speed * Time.deltaTime;
-	// 		yield return new WaitForEndOfFrame();
-	// 	}
-	// }
-
-	// IEnumerator RotateJointSync(Transform rotatingJoint, Vector3 target, Vector3 previousTarget, float speed = 1f) {
-	// 	Vector3 localTarget = target - previousTarget;
-	// 	Quaternion targetRotation = Quaternion.LookRotation(localTarget);
-	// 	float originalRotation = rotatingJoint.transform.eulerAngles.y;
-	// 	Vector3 destinationRotation = rotatingJoint.transform.eulerAngles;
-	// 	destinationRotation.y = rotation;
-	// 	float lerpIndex = 0f;
-	// 	Vector3 newRotation = rotatingJoint.transform.eulerAngles;
-	// 	while (Mathf.DeltaAngle(newRotation.y, rotation) > 0.05f || Mathf.DeltaAngle(newRotation.y, rotation) < -0.05f) {
-	// 		newRotation.y = Mathf.Lerp(originalRotation, rotation, lerpIndex);
-	// 		rotatingJoint.transform.rotation = Quaternion.Euler(newRotation);
-	// 		lerpIndex += speed * Time.deltaTime;
-	// 		yield return new WaitForEndOfFrame();
-	// 	}
-	// 	Debug.Log("Coroutine ended");
-	// 	// Debug.Log(Mathf.DeltaAngle(newRotation.y, rotation));
-
-	// }
+	public void setTarget(Transform target) {
+		StopAllCoroutines();
+		done = false;
+		this.target = target;
+		StartCoroutine(IterateIK());
+	}
 
 	IEnumerator RotateJoint(Transform rotatingJoint, Vector3 target, Vector3 previousTarget) {
 		Vector3 localTarget = target - previousTarget;
@@ -194,36 +173,11 @@ public class JointSystem : MonoBehaviour {
 		// Debug.Log(targetRotation.eulerAngles);
 		float lerpIndex = 0f;
 		while (Quaternion.Angle(rotatingJoint.rotation, targetRotation) > 0.05f) {
+			yield return new WaitForEndOfFrame();
 			rotatingJoint.rotation = Quaternion.Lerp(originalRotation, targetRotation, lerpIndex);
 			lerpIndex += Time.deltaTime;
 			// Debug.Log(rotatingJoint.rotation);
-			yield return new WaitForEndOfFrame();
+			// yield return null;
 		}
 	}
-
-	// static void LerpTransform(Transform transform, QuQuaternion targetRotation, Vector3 targetPosition, float lerpIndex) {
-	// 	transform.position = Vector3.Lerp()
-	// }
-
-	// IEnumerator RotateJointSync(Transform rotatingJoint, Vector3 target, Vector3 previousTarget, float speed = 1f) {
-	// 	Vector3 localTarget = target - previousTarget;
-	// 	float rotation = Mathf.Acos(localTarget.x) / Mathf.PI * 180;
-	// 	if (localTarget.z > 0) {
-	// 		rotation *= -1f;
-	// 	}
-	// 	float originalRotation = rotatingJoint.transform.eulerAngles.y;
-	// 	Vector3 destinationRotation = rotatingJoint.transform.eulerAngles;
-	// 	destinationRotation.y = rotation;
-	// 	float lerpIndex = 0f;
-	// 	Vector3 newRotation = rotatingJoint.transform.eulerAngles;
-	// 	while (Mathf.DeltaAngle(newRotation.y, rotation) > 0.05f || Mathf.DeltaAngle(newRotation.y, rotation) < -0.05f) {
-	// 		newRotation.y = Mathf.Lerp(originalRotation, rotation, lerpIndex);
-	// 		rotatingJoint.transform.rotation = Quaternion.Euler(newRotation);
-	// 		lerpIndex += speed * Time.deltaTime;
-	// 		yield return new WaitForEndOfFrame();
-	// 	}
-	// 	Debug.Log("Coroutine ended");
-	// 	// Debug.Log(Mathf.DeltaAngle(newRotation.y, rotation));
-
-	// }
 }
