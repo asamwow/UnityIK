@@ -30,7 +30,7 @@ public class JointSystemVectorTarget : MonoBehaviour {
 			jointDistances = new float[joints.Length-1];
 			for (int i = 0; i < joints.Length - 1; i++) {
 				jointDistances[i] = Vector3.Distance(joints[i].position, joints[i+1].position);
-				Debug.Log(jointDistances[i]);
+				// Debug.Log(jointDistances[i]);
 			}
 		}
 		// for (int i = 0; i < joints.Length - 1; i++) {
@@ -82,10 +82,11 @@ public class JointSystemVectorTarget : MonoBehaviour {
 			// Debug.LogWarning("TODO: find closest point to target that is within attainable span");
 			// or do this?
 			// // Distance from joint positions and the final target
+			Debug.Log("Out of reach");
 			float[] targetDistances = new float[jointCount];
 			float[] jointTargetFraction = new float [jointCount];
 			if (transform.parent == null) {
-				jointPositions[0] = Vector3.zero; //TODO replace this with original joint locatio
+				jointPositions[0] = Vector3.zero;
 			} else {
 				jointPositions[0] = transform.parent.position;
 			}
@@ -95,7 +96,6 @@ public class JointSystemVectorTarget : MonoBehaviour {
 				// Estimate joint position by linearly interpolating based on how much of the distance to target can be coverd by this joint
 				jointPositions[i+1] = Vector3.Lerp(jointPositions[i], target, jointTargetFraction[i]);
 			}
-			yield break;
 		} else {
 
 			for (int i = 0; i < jointCount; i++) {
@@ -161,7 +161,7 @@ public class JointSystemVectorTarget : MonoBehaviour {
 			}
 		}
 
-		Coroutine[] rotationCoroutines = new Coroutine[joints.Length-1];
+		// Coroutine[] rotationCoroutines = new Coroutine[joints.Length-1];
 
 		for (int i = 0; i < joints.Length - 1; i++) {
 			// rotationCoroutines[i] = StartCoroutine(RotateJoint(joints[i], jointPositions[i+1], jointPositions[i]));
