@@ -5,15 +5,22 @@ using UnityEngine;
 public class StartScript : MonoBehaviour {
 
     MeshCloth clothTest = new MeshCloth();
-	// Use this for initialization
-	void Start () {
+
+    GameObject testSphere;
+    Transform sphereTrans;
+    // Use this for initialization
+    void Start () {
+        testSphere = GameObject.Find("Sphere");
+        sphereTrans = testSphere.transform;
+
         clothTest = gameObject.AddComponent(typeof(MeshCloth)) as MeshCloth;
 
-        clothTest.addCollider(Vector3.zero, 7f);
+        clothTest.addCollider(sphereTrans.position, sphereTrans.localScale.x / 2);
     }
     int i = 0;
 	// Update is called once per frame
 	void FixedUpdate () {
+
         clothTest.Simulate();        
     }
 }

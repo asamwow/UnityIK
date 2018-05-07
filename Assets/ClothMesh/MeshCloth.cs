@@ -66,6 +66,9 @@ public struct ClothCollider
 //Cloth class
 public class MeshCloth : MonoBehaviour {
 
+    GameObject sphereCol;
+    Transform sphereTrans;
+
     private const int SimScale = 1;
     //original .01
     private const float minimumPhysicsDelta = 0.0075f;
@@ -111,6 +114,9 @@ public class MeshCloth : MonoBehaviour {
         Mesh myCloth = GetComponent<MeshFilter>().mesh;
 
         myCloth.Clear();
+
+        sphereCol = GameObject.Find("Sphere");
+        sphereTrans = sphereCol.transform;
 
         _gravity = new Vector3(0, -0.98f * SimScale, 0);
 
@@ -508,6 +514,13 @@ public class MeshCloth : MonoBehaviour {
                 _particles[_springs[i].P1].tension -= tensionDirection;
             }
 
+            var sfhere = _colliders[0];
+            sfhere.Position = sphereTrans.position;
+            sfhere.Radius = sphereTrans.localScale.x / 2;
+            _colliders[0] = sfhere;
+
+            
+
             //calculate the nextParticles from the current one
             for(int i = 0; i < _particles.Length; i++)
             {
@@ -538,7 +551,7 @@ public class MeshCloth : MonoBehaviour {
                 for(int j = 0; j<_colliders.Count; j++)
                 {
                     Vector3 P = _particles[i].nextPosition - _colliders[j].Position;
-                    float cR = _colliders[j].Radius * 1.08f;
+                    float cR = _colliders[j].Radius * 1.07f;
 
                     if(P.sqrMagnitude < cR * cR)
                     {
