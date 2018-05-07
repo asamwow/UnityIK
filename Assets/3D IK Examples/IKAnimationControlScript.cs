@@ -60,8 +60,6 @@ class IKAnimationControlScript : MonoBehaviour
         if (currentAnimatorStateInfo.IsName("Grounded"))
         {
             // Applies transformation to all grounded animations
-            if (true)
-            {
                 /*
                 // Applies to specific ranges of frames in an animation (based on total frames being 17)
                 float frameEstimate = animPercent * 17;
@@ -74,7 +72,7 @@ class IKAnimationControlScript : MonoBehaviour
                     leftFootObj.transform.localRotation = Quaternion.Euler(rotation);
                 }
                 */
-                if((animPercent >= 0 && animPercent < 0.16) || (animPercent > 0.94 || animator.GetFloat("Forward") < 0.1f))
+                if((animPercent >= 0 && animPercent < 0.16) || (animPercent > 0.94 || animator.GetFloat("Forward") < 0.2f))
                 {
                     // Ray cast to get points on 
                     // RaycastHit hit;
@@ -93,16 +91,22 @@ class IKAnimationControlScript : MonoBehaviour
                         // Debug.Log(hit.collider.gameObject.name);
                         // rightToe1.position = hit.point;
                         rightSide.setTarget(hit.point);
+                        // Debug.Log(hit.point);
                         // EditorApplication.isPaused = true;
                     }
                 }
-                else if((animPercent >= 0.42 && animPercent < 0.68))
+                if((animPercent >= 0.42 && animPercent < 0.68 || animator.GetFloat("Forward") < 0.2f))
                 {
-                    // Debug.Log("not raycasting");
+                    RaycastHit hit;
+                    if (Physics.Raycast(leftToe1.position + Vector3.up, Vector3.down, out hit, 2f, 1 << 0)) {
+                        // Debug.Log(hit.collider.gameObject.name);
+                        // rightToe1.position = hit.point;
+                        leftSide.setTarget(hit.point);
+                        // EditorApplication.isPaused = true;
+                    }
                 }
             }
             //myObject.transform.localPosition = position;
             //myObject.transform.localRotation = Quaternion.Euler(rotation);
-        }
     }
 }

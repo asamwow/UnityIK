@@ -141,6 +141,34 @@ Transform:
   m_Father: {fileID: 1178095938}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5740054
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 149626, guid: 7737647c22c1fc64a88d5cd030c352ce, type: 2}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 5740055}
+  m_Layer: 8
+  m_Name: EthanLeftFootPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5740055
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 489522, guid: 7737647c22c1fc64a88d5cd030c352ce, type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 5740054}
+  m_LocalRotation: {x: 0.5416768, y: 0.541676, z: -0.4545177, w: -0.45451856}
+  m_LocalPosition: {x: -0.123, y: 0.024403453, z: -0.007}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 293500287}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &61813501
 GameObject:
   m_ObjectHideFlags: 0
@@ -238,7 +266,7 @@ GameObject:
   - component: {fileID: 101485208}
   - component: {fileID: 101485207}
   m_Layer: 0
-  m_Name: Cube 0
+  m_Name: Stairs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -666,7 +694,7 @@ MonoBehaviour:
   m_RunCycleLegOffset: 0.2
   m_MoveSpeedMultiplier: 1
   m_AnimSpeedMultiplier: 1
-  m_GroundCheckDistance: 0.5
+  m_GroundCheckDistance: 1
 --- !u!114 &293500284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -723,6 +751,8 @@ Transform:
   - {fileID: 478521047}
   - {fileID: 800817790}
   - {fileID: 1744532782}
+  - {fileID: 5740055}
+  - {fileID: 907777065}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1492,6 +1522,34 @@ Transform:
   m_Father: {fileID: 1978443636}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &907777064
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 128330, guid: 7737647c22c1fc64a88d5cd030c352ce, type: 2}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 907777065}
+  m_Layer: 8
+  m_Name: EthanRightFootPs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &907777065
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 476132, guid: 7737647c22c1fc64a88d5cd030c352ce, type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 907777064}
+  m_LocalRotation: {x: 0.45451948, y: 0.45451888, z: -0.5416752, w: -0.5416758}
+  m_LocalPosition: {x: 0.126, y: 0.02666092, z: 0.008}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 293500287}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &965742703
 GameObject:
   m_ObjectHideFlags: 0
@@ -1861,7 +1919,11 @@ MonoBehaviour:
   - {fileID: 329789455}
   - {fileID: 480683746}
   - {fileID: 1399985588}
-  jointDistances: []
+  jointDistances:
+  - 0.36
+  - 0.34
+  - 0.14
+  - 0.1
   jointConstraints:
   - 90
   - 90
@@ -3316,7 +3378,7 @@ Transform:
   m_PrefabParentObject: {fileID: 496262, guid: 7737647c22c1fc64a88d5cd030c352ce, type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2097743417}
-  m_LocalRotation: {x: 0.53267515, y: 0.07034045, z: 0.83613265, w: -0.11041513}
+  m_LocalRotation: {x: 0.5326752, y: 0.070340455, z: 0.83613276, w: -0.110415146}
   m_LocalPosition: {x: 0.000022271464, y: -0.00006150465, z: 0.026027026}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:

@@ -25,6 +25,8 @@ public class JointSystemVectorTarget : MonoBehaviour {
 
 	Coroutine IKCoroutine = null;
 
+	bool shiftedUp = false;
+
 	void Start() {
 		if (jointDistances.Length != joints.Length - 1) {
 			jointDistances = new float[joints.Length-1];
@@ -33,24 +35,7 @@ public class JointSystemVectorTarget : MonoBehaviour {
 				// Debug.Log(jointDistances[i]);
 			}
 		}
-		// for (int i = 0; i < joints.Length - 1; i++) {
-		// 	GameObject newContainer = new GameObject();
-		// 	newContainer.name = "Joint " + i;
-		// 	newContainer.transform.parent = joints[i].transform.parent;
-		// 	newContainer.transform.position = joints[i].position;
-		// 	newContainer.transform.LookAt(joints[i+1]);
-		// 	// joints[i+1].transform.parent = newContainer.transform;
-		// }
 	}
-
-	// void Update() {
-	// 	// Debug.Log(IKCoroutine);
-	// 	if (IKCoroutine != null) {
-	// 		// StopCoroutine(IKCoroutine);
-	// 		return;
-	// 	}
-	// 	IKCoroutine = StartCoroutine(IterateIK());
-	// }
 
 	IEnumerator IterateIK(float speed = 1f) {
 		// Check for malformed parameters
@@ -91,7 +76,7 @@ public class JointSystemVectorTarget : MonoBehaviour {
 				jointPositions[0] = transform.parent.position;
 			}
 			for (int i = 0; i < jointCount-1; i++) {
-				targetDistances[i] = Vector3.Distance(joints[i].position, target);
+				targetDistances[i] = Vector3.Distance(jointPositions[i], target);
 				jointTargetFraction[i] = jointDistances[i] / targetDistances[i];
 				// Estimate joint position by linearly interpolating based on how much of the distance to target can be coverd by this joint
 				jointPositions[i+1] = Vector3.Lerp(jointPositions[i], target, jointTargetFraction[i]);
@@ -166,7 +151,8 @@ public class JointSystemVectorTarget : MonoBehaviour {
 		for (int i = 0; i < joints.Length - 1; i++) {
 			// rotationCoroutines[i] = StartCoroutine(RotateJoint(joints[i], jointPositions[i+1], jointPositions[i]));
 			// Debug.Log(jointPositions[i]);
-			joints[i].position = jointPositions[i];
+			// joints[i].position = jointPositions[i];
+			RotateJointSingleAxis(joints[i], jointPositions[i+1], jointPositions[i], jointDistances[i], i);
 		}
 
 		// for (int i = 0; i < joints.Length - 1; i++) {
@@ -197,5 +183,20 @@ public class JointSystemVectorTarget : MonoBehaviour {
 			// Debug.Log(rotatingJoint.rotation);
 			// yield return null;
 		}
+	}
+
+	void RotateJointSingleAxis(Transform rotatingJoint, Vector3 target, Vector3 previousTarget, float jointLength, int jointIndex) {
+		Vector3 localTarget = previousTarget - target;
+		// rotatingJoint.transform.rotation = Quaternion.FromToRotation(Vector3.left, localTarget);
+		Vector3 jointEuler = rotatingJoint.transform.localEulerAngles;
+		jointEuler.z = Mathf.Acos(localTarget.y/jointLength) / Mathf.PI * 180f;
+		if (jointIndex == 2) {
+			jointEuler.z -= 70f;
+		}
+		if (jointIndex == 3) {
+			jointEuler.z -= 180f;
+		}
+		// Debug.Log(localTarget);
+		rotatingJoint.transform.localEulerAngles = jointEuler;
 	}
 }

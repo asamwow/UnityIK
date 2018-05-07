@@ -8,6 +8,9 @@ public class GameController : MonoBehaviour {
 	Transform startingHandLocation;
 
 	[SerializeField]
+	Transform secondHandLocation;
+
+	[SerializeField]
 	Transform ballGrabHandLocation;
 
 	[SerializeField]
@@ -21,6 +24,9 @@ public class GameController : MonoBehaviour {
 	
 	[SerializeField]
 	ClawController claw;
+
+	[SerializeField]
+	bool pauseForDemonstration = true;
 
 	void Start() {
 		StartCoroutine(controlArm());
@@ -39,6 +45,14 @@ public class GameController : MonoBehaviour {
 	IEnumerator controlArm() {
 		Rigidbody ballRigidBody = ball.GetComponent<Rigidbody>();
 		mainArm.setTarget(startingHandLocation);
+		do {
+			//Debug.Log(mainArm.done);
+			yield return null;
+			if (mainArm.done) {
+				mainArm.setTarget(startingHandLocation);
+			}
+		} while (pauseForDemonstration);
+		mainArm.setTarget(secondHandLocation);
 		while (!mainArm.done) {
 			yield return null;
 		}

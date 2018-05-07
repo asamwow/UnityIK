@@ -25,6 +25,7 @@ public class JointSystem : MonoBehaviour {
 	Coroutine IKCoroutine = null;
 
 	void Start() {
+		done = true;
 		if (jointDistances.Length != joints.Length - 1) {
 			jointDistances = new float[joints.Length-1];
 			for (int i = 0; i < joints.Length - 1; i++) {
@@ -163,7 +164,7 @@ public class JointSystem : MonoBehaviour {
 		StopAllCoroutines();
 		done = false;
 		this.target = target;
-		StartCoroutine(IterateIK());
+		IKCoroutine = StartCoroutine(IterateIK());
 	}
 
 	IEnumerator RotateJoint(Transform rotatingJoint, Vector3 target, Vector3 previousTarget) {
