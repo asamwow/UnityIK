@@ -68,6 +68,8 @@ public class JointSystem : MonoBehaviour {
 		if (maxSpan < targetSpan) {
 			//TODO
 			Debug.LogWarning("TODO: find closest point to target that is within attainable span");
+			done = true;
+			IKCoroutine = null;
 			yield break;
 			// or do this?
 			// // Distance from joint positions and the final target
